@@ -1,21 +1,28 @@
 # xgBoost
 
-# Intoduction and Tips
+## Intoduction 
 
-요약하자면
+### 이해를 돕는 자료 
+- [xgBoost Document](https://xgboost.readthedocs.io/en/latest/)
+    - [xgBoosting 시작하기 - '소고'님의 brunch posting](https://brunch.co.kr/@snobberys/137)
+    - [**xgBoosting** and lightGBM parameter explanation](https://sites.google.com/view/lauraepp/parameters)  
+    **parameter tuning 시에 보고 참고하길 권장**
 
-1. feature dimension의 수가 클 때,
-2. Sample의 수가 작을 때
-3. Computer vision 문제
-4. NLP문제
+## Tips
+- **When to Use XGBoost?**
+    - we have large number of observations in training data.
+    - number features are smaller than number of observations in training data.
+    - data has mixture numerical and categorical features or just numeric features.
+    - model performance metrics are to be considered.  
 
-에서는 사용을 지양한다.
+- **When to NOT use XGBoost?**
+    - number of observations in training data is significantly smaller than the number of features
+    - image recognition
+    - computer vision
+    - natural language processing
 
-ref.
+ref. [When to NOT use XGBoost? | Data Science and Machine Learning](https://www.kaggle.com/discussion/196542?fbclid=IwAR132c6fD_Rh3ZR1io_FInrLmSHVdPI53pw0q51kaUplR1LiDOsQ0rnVtIg) → 여기서 확인해 볼 수 있다. 
 
-[When to NOT use XGBoost? | Data Science and Machine Learning](https://www.kaggle.com/discussion/196542?fbclid=IwAR132c6fD_Rh3ZR1io_FInrLmSHVdPI53pw0q51kaUplR1LiDOsQ0rnVtIg)
-
-→ 여기에서 확인해 볼 수 있다. 
 
 - can work fine with tabular data even with billions of data points
 - can work fine with lot of columns (such as >millions)
