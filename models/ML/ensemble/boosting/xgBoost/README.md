@@ -1,6 +1,6 @@
 # xgBoost
 
-# Tips
+# Intoduction and Tips
 
 요약하자면
 
