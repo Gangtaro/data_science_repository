@@ -9,6 +9,12 @@
     **parameter tuning 시에 보고 참고하길 권장**
 
 ## Tips
+
+### Categorical Variables Handling
+- OHE 보다는 범주의 개수가 많은 범주형 변수는 성질을 잘 이분화 시킬 수 있는 구조로 나누면 된다.
+- 즉, Category가 5개인 변수를 (2개, 2개)로 나누어주는 것이 가장 좋다. (정보를 잘 나눌 수 있게)
+
+### Why We Use XGB
 - **When to Use XGBoost?**
     - we have large number of observations in training data.
     - number features are smaller than number of observations in training data.
