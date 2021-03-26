@@ -1,10 +1,11 @@
 
 
-- 참고 문서
-    - [공식문서](https://lightgbm.readthedocs.io/en/latest/index.html)
+### 이해를 돕는 자료
+- [공식문서](https://lightgbm.readthedocs.io/en/latest/index.html)
     - [Gradient Boosting with Scikit-learn, ...](https://machinelearningmastery.com/gradient-boosting-with-scikit-learn-xgboost-lightgbm-and-catboost/)
     - [What is LightGBM, how to implement it? how to fine tune the parameters? - Pushkar Mandot](https://medium.com/@pushkarmandot/what-is-lightgbm-how-to-implement-it-how-to-fine-tune-the-parameters-60347819b7fc)
-    
+    - [xgBoosting and lightGBM parameter explanation](https://sites.google.com/view/lauraepp/parameters)  
+    parameter tuning 시에 보고 참고하길 권장
     
     
 - LightGBM의 특징
@@ -14,5 +15,22 @@
     - 
     
 ### [basic] Parameter introduction
-- max_depth : Tree의 최대 깊이. --> 과적합이 의심되면 줄여야한다. 
-- min_data_in_leaf : Leaf가 가지고 있는 최소한의 record 수.
+- **max_depth :** (defaults to -1, meaning infinite depth)
+    - Range : [1, ~], int
+    - Decription : 각각의 훈련된 Tree의 최대 깊이, **크기가 커질수록 좋은 결과가 나오나, 과적합의 속도도 빨라진다.** --> 과적합이 의심되면 줄여야한다. **과적합과 비례**
+    - **tips :** 필요에 따라 무한정으로 이 값을 늘려 가지수를 늘릴 수 있다.
+    
+- **min_data_in_leaf :** (defaults to 20)
+    - Range : [0, ~], int
+    - Discription : Leaf가 가지고 있는 최소한의 관측치 수,  **과적합과 비례**
+    - **tips :** 어떤 방향으로 흘러가고 있는지 모를때는 조정하지 않기를 권장. 관측치의 개수가 100개 정도로 매우 적다면 이 수치를 줄이고 반대는 필요시에 늘려야한다. 
+    
+- **feature_fraction :** (defaults to 1, 사용시에 보통 0.7 사용, **Boosting : rf 일때 사용**)
+    - Range : [0, 1], float 
+    - Description : iteration마다 랜덤으로 선택하는 feature의 비율. 
+    - **tips :** 미세하게 조정할 필요는 없다. 이 방법이 항상 더 좋은 것은 아니다. (SGD is not always better than GD)
+    
+- **bagging_fraction :** (defaults to 1, 사용시에 보통 0.7 사용)
+    - Range : [0, 1], float
+    - Description : iteration마다 랜덤으로 선택하는 관측치의 비율 (Row sampling). 
+    - **tips :** 미세하게 조정할 필요는 없다. 이 방법이 항상 더 좋은 것은 아니다. (SGD is not always better than GD)
