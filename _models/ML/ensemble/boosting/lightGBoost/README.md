@@ -66,8 +66,14 @@
         Regularization은 항상 좋은 방법은 아니다. Data set과 Weight에 의존적이다.
 
 
-
-
+- **min_gain_to_split :** (Defaults to 0, typically 0)
+    - Range : [0, ~]
+    - Desription : 하나의 노드에서 가지를 치기위해 있어야하는 최소한의 관측치 수 설정.
+    - **tips :** 뭐하고 있는지 모를땐 놔도라, **DEEP tree model**을 설계할때 유용하게 사용된다.
+    
+- **max_cat_threshold :** (Defaults to 32, typically 32)
+    - Range : [1, ~]
+    - Description : 범주형 변수 가운데, 과적합을 막기위해, 
 
 
 
