@@ -48,7 +48,7 @@
     - details
         이 값을 너무 높게 설정해두는것은 운 덕분에 멈추는 것을 허용하지 않으면서도 과적합의 위험이 있다. 
         
-- **lambda_l1 :** (Defaults to 0, typically 0)
+- **reg_alpha :** (Defaults to 0, typically 0)
     - Range : [0, ~]
     - Description : [**L1-정규화**](https://www.notion.so/L1-L2-Regularization-2a53907271bb4bbabe44fd4cf0c140c8)
     - **tips :** 뭐하고 있는지 모를땐 놔둬라
@@ -57,7 +57,7 @@
         Regularization은 항상 좋은 방법은 아니다. Data set과 Weight에 의존적이다.
         
 
-- **lambda_l2 :** (Defaults to 0, typically 0)
+- **reg_lambda :** (Defaults to 0, typically 0)
     - Range : [0, ~]
     - Description : [**L2-정규화**](https://www.notion.so/L1-L2-Regularization-2a53907271bb4bbabe44fd4cf0c140c8)
     - **tips :** 뭐하고 있는지 모를땐 놔둬라
@@ -73,7 +73,10 @@
     
 - **max_cat_threshold :** (Defaults to 32, typically 32)
     - Range : [1, ~]
-    - Description : 범주형 변수 가운데, 과적합을 막기위해, 
+    - Description : 범주형 변수 가운데, 과적합을 막기위해 LightGBM 알고리즘이 새로운 변수 max_cat_group으로 만들어서 그룹 경계를 다시 설정했다.
+   
+### [Core Parameters]
+- 
 
 
 
