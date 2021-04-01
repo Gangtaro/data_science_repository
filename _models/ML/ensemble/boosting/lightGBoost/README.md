@@ -110,8 +110,8 @@
             - **```binary``` :** binary log loss classification or logistic regression
              
         - multi-class classification application
-            - **```multiclass``` :** [softmax]() objective function
-            - **```multivlassova``` :** [One-vs-all]() binary objective function
+            - **```multiclass``` :** [softmax](https://en.wikipedia.org/wiki/Softmax_function) objective function
+            - **```multivlassova``` :** [One-vs-all](https://en.wikipedia.org/wiki/Multiclass_classification#One-vs.-rest) binary objective function
             - **```num_class``` :** should be as well
             
         - cross-entropy application
@@ -119,18 +119,21 @@
             - **```cross_entropy_lambda``` :** alternative parameterization of cross-entropy
              
         - ranking application
-            - **```lambdarank``` :** [lambdarank]() objective. [```label_gain```]() can be used to set the gain (weight) of int label and all values in label must be smaller than number of elements in ```label_gain```
-            - **```rank_xendcg``` :** [XE_NDCG_MART]() ranking objective function
+            - **```lambdarank``` :** [lambdarank](https://papers.nips.cc/paper/2971-learning-to-rank-with-nonsmooth-cost-functions.pdf) objective. [```label_gain```](https://lightgbm.readthedocs.io/en/latest/Parameters.html#label_gain) can be used to set the gain (weight) of int label and all values in label must be smaller than number of elements in ```label_gain```
+            - **```rank_xendcg``` :** [XE_NDCG_MART](https://arxiv.org/abs/1911.09798) ranking objective function
             - ```rank_xendcg``` is faster than and achieves the similar performance as lambdarank
             - label should be int type, and larger number represents the higher relevance (e.g. 0:bad, 1:fair, 2:good, 3:perfect)
 
 - **boosting :** (Defaults to 'gdbt')
     - Description : Boosting method. In belief, the boster method has a huge impact on traning performance.
     - Options
-        - **```rf```   :**  (Random Forest) which is builds a Random Forest model **(not boosting)**;
-        - **```gbdt``` :**  (Gradient Boosted Decision Trees) which is the default boosting method using Decision Trees and Stochastic Gradient Descent;
-        - **```dart``` :**  (Dropout Additive Regression Trees) which is a method employing the Dropout method from Neural Networks;
+        - **```rf```   :**  (Random Forest) which is builds a Random Forest model **(not boosting)**  
+            useful when avoiding cross-validation is possible step.
+        - **```gbdt``` :**  (Gradient Boosted Decision Trees) which is the default boosting method using Decision Trees and Stochastic Gradient Descent
+        - **```dart``` :**  (Dropout Additive Regression Trees) which is a method employing the Dropout method from Neural Networks
+            dart is similar to DropOut in neural networks, except you are applying this idea to trees(droping trees ramdomly)
         - **```goss``` :**  (Gradient-based One-Side Sampling) which is a method using subsampling to converge faster/better using Stochastic Gradient Descent.
+            goss is an adaptive novel method for reconstructing gradients based on other gradients, to converge faster while trying to provide better performance 
 
 
 
