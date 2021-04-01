@@ -9,9 +9,10 @@
     
 - 참고문서
     - cross-entropy
-        - [Cross-entropy 의 이해: 정보이론과의 관계](https://3months.tistory.com/436)
-        - [초보를 위한 정보이론 안내서 - Cross Entropy 파헤쳐보기](https://hyunw.kim/blog/2017/10/26/Cross_Entropy.html)
-    
+        - [Cross-entropy 의 이해: 정보이론과의 관계, 3months](https://3months.tistory.com/436)
+        - [초보를 위한 정보이론 안내서 - Cross Entropy 파헤쳐보기, hyunw.kim](https://hyunw.kim/blog/2017/10/26/Cross_Entropy.html)
+    - Objective function
+        - [머신러닝 Loss Function 이해하기, keepdev](https://keepdev.tistory.com/48)
     
 - LightGBM의 특징
     - Tree기반의 모델이 수직적으로 확장되는 반면 **LightGBM은 수평적으로 확장되는 특성을 지니고 있다.** 
@@ -91,9 +92,10 @@
         - **Note:** can be used only in CLI version; for language-specific packages you can use the correspondent functions
 
 - **application :** (Defaults to 'regression') aliases : **objective**
-    - Description : **Regressor, Classifier**(Multi, binary)**, Ranker, ...** 어떤 모델을 사용할지 결정했다면, 가중치(또는 회귀계수)를 학습할때 사용되는 목적함수를 결정해야하는데, 여기서 목적함수(objective)로 쓰일 손실함수(loss function)들을 지정할 수 있다. 
-        **다음은 목적함수로 쓰일 수 있는 함수들이다.**
-        - 회귀 (regression application)
+    - Description : **Regressor, Classifier**(Multi, binary)**, Ranker, ...** 어떤 모델을 사용할지 결정했다면, 모델에 쓰일 가중치(또는 회귀계수)를 학습할때 사용되는 목적함수를 결정해야하는데, 여기서 목적함수(objective)로 쓰일 손실함수(loss function)들을 지정할 수 있다. 즉, **분류기+목적함수**의 조합을 지정할 수 있다.
+      
+        **다음은 분류기에 따른 목적함수로 쓰일 수 있는 모든 모델들이다**
+        - regression application
             - **```regression``` :** L2 loss, MSE, 즉, Ridge regression의 방법을 채택한다.
             - **```regression_l1``` :** L1 loss, MAE, LASSO regression의 방법을 채택한다.
             - **```huber``` :** [Huber loss](https://en.wikipedia.org/wiki/Huber_loss) ?
@@ -102,19 +104,33 @@
             - **```quantile``` :** [Quantile regression](https://en.wikipedia.org/wiki/Quantile_regression) ?
             - **```mape``` :** [MAPE loss](https://en.wikipedia.org/wiki/Mean_absolute_percentage_error)를 목적함수로 사용.
             - **```gamma``` :** 회귀모델 자체를 gamma regression with log-link으로 채택한다. 이는 insurance claims severity과 같은 데이터를 모델링 할 때나 타겟 변수가 [gamma-distributed](https://en.wikipedia.org/wiki/Gamma_distribution#Occurrence_and_applications)인 데이터를 모델링 할 때, 유용할 수 있다.
-            - **```tweedie``` :** 회귀모델 자체를 tweedie regression with log-link으로 채택한다. 이는 total loss in insurance와 같은 데이터를 모델링 할 때나 타겟 변수가 [tweedie-distributed](https://en.wikipedia.org/wiki/Tweedie_distribution#Occurrence_and_applications)인 데이터를 모델링 할 때, 유용할 수 있다.
-            - **`````` :** 
-            - **`````` :** 
+            - **```tweedie``` :** 회귀모델 자체를 tweedie regression with log-link으로 채택한다. 이는 total loss in insurance와 같은 데이터를 모델링 할 때나 타겟 변수가 [tweedie-distributed](https://en.wikipedia.org/wiki/Tweedie_distribution#Occurrence_and_applications)인 데이터를 모델링 할 때, 유용할 수 있다.        
             
-         - binary classification
-             - **`````` :** 
-
-
+        - binary classification application
+            - **```binary``` :** binary log loss classification or logistic regression
              
+        - multi-class classification application
+            - **```multiclass``` :** [softmax]() objective function
+            - **```multivlassova``` :** [One-vs-all]() binary objective function
+            - **```num_class``` :** should be as well
             
+        - cross-entropy application
+            - **```cross_entropy``` :** objective function for cross-entropy (with optional linear weights)
+            - **```cross_entropy_lambda``` :** alternative parameterization of cross-entropy
+             
+        - ranking application
+            - **```lambdarank``` :** [lambdarank]() objective. [```label_gain```]() can be used to set the gain (weight) of int label and all values in label must be smaller than number of elements in ```label_gain```
+            - **```rank_xendcg``` :** [XE_NDCG_MART]() ranking objective function
+            - ```rank_xendcg``` is faster than and achieves the similar performance as lambdarank
+            - label should be int type, and larger number represents the higher relevance (e.g. 0:bad, 1:fair, 2:good, 3:perfect)
 
-
-
+- **boosting :** (Defaults to 'gdbt')
+    - Description : Boosting method. In belief, the boster method has a huge impact on traning performance.
+    - Options
+        - **```rf```   :**  (Random Forest) which is builds a Random Forest model **(not boosting)**;
+        - **```gbdt``` :**  (Gradient Boosted Decision Trees) which is the default boosting method using Decision Trees and Stochastic Gradient Descent;
+        - **```dart``` :**  (Dropout Additive Regression Trees) which is a method employing the Dropout method from Neural Networks;
+        - **```goss``` :**  (Gradient-based One-Side Sampling) which is a method using subsampling to converge faster/better using Stochastic Gradient Descent.
 
 
 
