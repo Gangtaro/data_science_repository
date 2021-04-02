@@ -131,10 +131,11 @@
             useful when avoiding cross-validation is possible step.
         - **```gbdt``` :**  (Gradient Boosted Decision Trees) which is the default boosting method using Decision Trees and Stochastic Gradient Descent
         - **```dart``` :**  (Dropout Additive Regression Trees) which is a method employing the Dropout method from Neural Networks
-            dart is similar to DropOut in neural networks, except you are applying this idea to trees(droping trees ramdomly)
+            ```dart``` is similar to DropOut in neural networks, except you are applying this idea to trees(droping trees ramdomly)
         - **```goss``` :**  (Gradient-based One-Side Sampling) which is a method using subsampling to converge faster/better using Stochastic Gradient Descent.
-            goss is an adaptive novel method for reconstructing gradients based on other gradients, to converge faster while trying to provide better performance 
+            ```goss``` is an adaptive novel method for reconstructing gradients based on other gradients, to converge faster while trying to provide better performance 
 
+- **num_boost_round :** 
 
 
 
