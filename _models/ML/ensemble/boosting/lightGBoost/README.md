@@ -20,6 +20,24 @@
     - 데이터의 개수가 적은 데이터에는 적합하지 않다. (Leaf-Wise 특성이 강해서, 과적합이 될 우려가 크다.)
     - 
     
+## Parameter tuning
+LightGBM은 [**leaf-wise tree**](https://lightgbm.readthedocs.io/en/latest/Features.html#leaf-wise-best-first-tree-growth) 기반의 알고리즘을 사용한다. **depth-wise** growth와 비교하여 **leaf-wise** growth는 더 빨리 값에 수렴한다. 하지만 이는 즉 하이퍼 파라미터를 제대로 설정해주지 않으면 쉽게 과적합(Over-fitting)될 수 있다는 것을 의미한다. 그래서 우리는 다음과 같은 사실을 먼저 인지해야한다.
+
+### Leaf-Wise Tree를 위한 파라미터 튜닝 올바른 방향으로 하는 방법
+1. ```num_leaves```  
+    - 사실상 모델의 복잡도 구성에 있어서 가장 중요한 파라미터. 
+    - 이론적으로, ```num_leaves = 2^(max_depth)``` 이렇게 설정해두면 **depth-wise tree**와 같은 수의 잎을 만들어 내게 된다. **근데 이것은 실제 수행에 있어서 그리 좋지 못하다.** 왜냐하면 **leaf-wise tree**는 같은 잎의 개수를 가정할 때, **depth-wise tree**보다 더 깊은 tree를 만들어 내게 된다. 제한이 없는 depth에 대하여 과적합을 유도할 수 있다는 말이다. 
+    - 그래서, ```num_leaves < 2^(max_depth)```와 같이 ```num_leaves```를 설정해주면 더 좋은 성능을 기대 할 수 있다.
+
+2. ```min_data_in_leaf```
+    - **leaf-wise**에서 과적합을 방지하는데에 중요한 파라미터
+    - 이 값의 최적의 값은 training samples의 개수와 ```num_leaves```의 값에 의존적이다.
+    - 이 값을 크게 설정해두면 tree가 너무 깊어지는 것을 방지할 수 있지만, 과소적합이 우려된다. 실제 수행에서, 큰 데이터에 대해, 천에서 백정도가 적당하다.
+    
+3. ```max_depth```
+    - tree의 최대 깊이에 제한을 걸어둠으로서 leaf-wise가 빠져들기 쉬운 과적합에서 벗어날 수 있다.
+
+    
 ### [basic] Parameter introduction
 - **max_depth :** (defaults to -1, meaning infinite depth, **typically 6, usually [3, 12]**)
     - Range : [1, ~], int
@@ -33,8 +51,9 @@
     
 - **min_data_in_leaf :** (defaults to 20, **typically 100**)
     - Range : [0, ~], int
-    - Discription : Leaf가 가지고 있는 최소한의 관측치 수,  **과적합과 비례**
+    - Discription : <u>Leaf가 가지고 있어야 하는 최소한의 관측치 수</u>,  **과적합과 비례**
     - **tips :** 어떤 방향으로 흘러가고 있는지 모를때는 조정하지 않기를 권장. 관측치의 개수가 100개 정도로 매우 적다면 이 수치를 줄이고 반대는 필요시에 늘려야한다. 진짜 아무것도 모르겠는 상태에는 xgboost와 같이 1로 놔둔다.
+    - [How to tune this](#Leaf-Wise-Tree를-위한-파라미터-튜닝-올바른-방향으로-하는-방법)
     
 - **feature_fraction :** (defaults to 1, 사용시에 보통 0.7 사용, **Boosting : rf 일때 사용**)
     - Range : [0, 1], float 
@@ -135,13 +154,39 @@
         - **```goss``` :**  (Gradient-based One-Side Sampling) which is a method using subsampling to converge faster/better using Stochastic Gradient Descent.
             ```goss``` is an adaptive novel method for reconstructing gradients based on other gradients, to converge faster while trying to provide better performance 
 
-- **num_boost_round :** 
+- **num_boost_round :** (Defaults to 100) aliases : **n_estimators**, num_iterations, num_iteration, n_iter, num_tree, num_round, ...
+    - Range : [1, ~], int
+    - Description : Number of boosting iterations. (모델을 학습하는데 boosting을 통해 가중치를 학습하는 round 수)
+    - **tips :** 보통, 이 값을 높게 설정할 수록 더 좋은 결과가 나오게 된다(<u>과적합되기 전까지!</u>). 따라서 이 파라미터를 설정할때는 언제 과적합이 발생하는지 주시하는 것이 중요하다. 자동적으로 라운드를 종료시키기 위해 ```early_stopping_round```와 같이 사용하면 좋다.  
+        **보통 다음 두 방법을 통해 이 값을 설정한다.**
+        - 값을 높게 설정해주고 + ```early_stoppping_round```와 같이 사용
+        - Cross-validation을 통해 발견된 반복수의 평균의 1.1배를 이 값으로 사용
+
+- **learning_rate :** (Defaults to 0.1, typically 0.1, 0.05, 0.001, 0.003)
+    - Range : (0, ~], float
+    - Description : 학습속도를 조절해준다. 매번의 iteration마다 training loss가 나오는데 여기에 learning rate가 곱해져서 학습 속도를 조절하게 된다. 이를 작게 설정하면 조금 더 섬세하게 학습이 되고 과적합까지 가는데 천천히 가는 대신에 iteration의 수가 많아져야 하기 때문에 학습속도가 느리게 된다. 반대로 이 값이 커지면 학습속도는 빠를 수 있으나 최적의 값을 찾는대 섬세하지 않을 수 있다.
+    - **tips :** 하이퍼 파라미터 튜닝 할 때는, 이 값을 큰 값으로 설정해두는 것이 좋다.
+    
+    - details
+        - ```learning_rate```는 한 번 정하면 더 이상 변화를 주는 값이 아니다, **하이퍼 파라미터 튜닝의 대상으로 여기는 것은 좋은 것이 아니다.**
+        - ```learning_rate```는 '학습속도'&'성능'과 **Trade-off** 관계에 있다.
+        - 보통 다음과 같은 값으로 사용한다.(typically)
+            + when hyper-parameter tuning, **learning_rate = 0.10**
+            + when training the model,     **learning_rate = 0.05**
+
+- **num_leaves :** (Defaults to 31)
+    - Range : [1, ~], int
+    - Description : 학습된 Tree의 최대 잎의 개수
+    - **tips :** 
+    
+    - details
+        - 반드시 ```max_depth```와 함께 튜닝해야한다.
+        - 
+    
 
 
 
-
-
-
+num class ?
 
 
 
