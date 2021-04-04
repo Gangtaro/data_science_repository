@@ -93,7 +93,7 @@ LightGBM은 [**leaf-wise tree**](https://lightgbm.readthedocs.io/en/latest/Featu
     
 - **```early_stopping_round``` :** (defaults to NULL, typically 50)
     - Range : [0, ~]
-    - **Needs :** 평가로 사용할 데이터를 지정해줘야한다. + [more information about ```metrics```](#[Metric-parameters])
+    - **Needs :** 평가로 사용할 데이터를 지정해줘야한다. + [more information about ```metrics```](#Metric-parameters)
     - Description : iteration 진행중, 여기서 지정해준 ```early_stopping_round```에서 Validation data의 지표가 이전보다 증가하지 않았다면 학습을 중단한다.
     - **tips :** Validation data set을 추가하지 않았다면 쓸모없는 파라미터 -> lgb.dataset 참고, **```learning_rate```**와 같이 적절히 조정해주면 좋다.
     
