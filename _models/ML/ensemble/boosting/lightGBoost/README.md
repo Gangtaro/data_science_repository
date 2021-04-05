@@ -167,7 +167,12 @@ LightGBM은 [**leaf-wise tree**](https://lightgbm.readthedocs.io/en/latest/Featu
         - multi-class classification application
             - **```multiclass``` :** [softmax](https://en.wikipedia.org/wiki/Softmax_function) objective function
             - **```multivlassova``` :** [One-vs-all](https://en.wikipedia.org/wiki/Multiclass_classification#One-vs.-rest) binary objective function
-            - **```num_class``` :** should be as well
+            - **```num_class```** should be set as well (label의 class의 개수를 지정해주어야 한다.)
+                - **Note:** 이를 지정해줘도 오류가 난다면 다음과 같은 setting을 했는지 살펴 봐야한다.  레이블의 클래스의 수가 10이라면 (```num_class``` = 10), 원하는 레이블 class의 값들이 (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)와 같은 형태로 지정되어 있는 것이 맞는 지 알아야한다. 이는 다음과 같은 방식으로 바꿀 수 있다.   
+                ```python
+                y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                y.replace({1:0, 2:1, 3:2, 4:3, 5:4, 6:5, 7:6, 8:7, 9:8, 10:9}, inplace = True)
+                ```
             
         - cross-entropy application
             - **```cross_entropy``` :** objective function for cross-entropy (with optional linear weights)
@@ -197,6 +202,8 @@ LightGBM은 [**leaf-wise tree**](https://lightgbm.readthedocs.io/en/latest/Featu
         **보통 다음 두 방법을 통해 이 값을 설정한다.**
         - 값을 높게 설정해주고 + ```early_stoppping_round```와 같이 사용
         - Cross-validation을 통해 발견된 반복수의 평균의 1.1배를 이 값으로 사용
+    - details
+        - **Note:** internally, LightGBM constructs ```num_class * num_iterations``` trees for multi-class classification problems
 
 - **```learning_rate``` :** (Defaults to 0.1, typically 0.1, 0.05, 0.001, 0.003)
     - Range : (0, ~], float
@@ -207,13 +214,13 @@ LightGBM은 [**leaf-wise tree**](https://lightgbm.readthedocs.io/en/latest/Featu
         - ```learning_rate```는 한 번 정하면 더 이상 변화를 주는 값이 아니다, **하이퍼 파라미터 튜닝의 대상으로 여기는 것은 좋은 것이 아니다.**
         - ```learning_rate```는 '학습속도'&'성능'과 **Trade-off** 관계에 있다.
         - 보통 다음과 같은 값으로 사용한다.(typically)
-            + when hyper-parameter tuning, **learning_rate = 0.10**
-            + when training the model,     **learning_rate = 0.05**
+            + when <u>hyper-parameter tuning</u>, **learning_rate = 0.10**
+            + when <u>training the model</u>,     **learning_rate = 0.05**
 
 - **```num_leaves``` :** (Defaults to 31)
     - Range : [1, ~], int
     - Description : 학습된 Tree의 최대 잎의 개수
-    - **tips :** 
+    - **tips :** ```num_leaves```을 ```2^(max_depth)```보다 조금 작게 조정한다.
     
     - details
         - 반드시 ```max_depth```와 함께 튜닝해야한다.
@@ -221,6 +228,19 @@ LightGBM은 [**leaf-wise tree**](https://lightgbm.readthedocs.io/en/latest/Featu
         - **두 번째로 민감한 변수.**
     
     - [How to tune this](#Leaf-Wise-Tree를-위한-파라미터-튜닝-올바른-방향으로-하는-방법)
+    
+- **```n_jobs``` :** (Defaults to 0, the number of threads in your machine)
+    - Range : [1, ~], int
+    - Decription : Number of threads using for training models. LightGBM 모델을 학습시에 이 컴퓨터에서 할당할 CPU(or GPU)의 thread 개수 지정.
+    - details
+        - **Intel CPUs** 의 경우, 물리적 코어의 개수보다 논리적 코어의 개수를 사용해야한다.(이건 옛날이야기?)
+        - 많은 thread를 이용하여 계산을 할 경우 당연히 더 빨리 학습할 수 있다.
+        - To find the best number of threads, you can benchmark manually the training speed by changing the number of threads.
+        - Choosing the number of threads depends both on your CPU and the dataset. Do not overallocate logical cores.
+        - **SEE :**
+            - [Destroying the Myth of “number of threads = number of physical cores](https://medium.com/data-design/destroying-the-myth-of-number-of-threads-number-of-physical-cores-762ad3919880)
+            - [Benchmarking LightGBM: how fast is LightGBM vs xgboost?](https://medium.com/data-design/benchmarking-lightgbm-how-fast-is-lightgbm-vs-xgboost-7b5484746ac4)
+        - MacBook Pro (16-inch Late 2019), the number of Processor Threads : 16
 
 ### [Metric parameters]
 **모델 학습 중, 분류기가 매 iteration마다 만들어지는데**, 그 때마다 분류기의 성능을 설정해둔 ```eval_set``` (= [(X_valid, y_valid)] ) evaluation 데이터셋을 상대로 성능을 평가한다. 이때 ```metric```을 지정해주지 않으면 자동적으로 분류기가 알아서 평가지표를 선택한다. 여기서는 ```metric```을 지정해주고 싶을 때, 어떤 평가지표를 사용할 수 있는지 알 수 있다.
@@ -251,9 +271,58 @@ LightGBM은 [**leaf-wise tree**](https://lightgbm.readthedocs.io/en/latest/Featu
 - support multiple metrics, separated by ```,```
 
 
+### [IO Parameters]
+input and output concerned parameters
 
+- **```max_bin``` :** (Defaults to 255, typically 255)
+    - Range : [1, ~], int
+    - Description : 이 값을 작게 설정하면 학습 정확도가 다소 떨어질 수 있으나 검정력은 다소 오를 수 있다. (과대적합을 컨트롤)
+    - **tips :** 뭐하고 있는지 모를땐 놔도라.
+    - details
+        - binning은 일종의 regularization이다. 이는 항상 좋은 결과를 나타낸다는 것이 아니라는 말이다. 또한 regularization은 dataset과 weight에 의존적이다.
+        - 그리고 binning은 실제 세상의 데이터보다 가상적으로 만들어진 데이터에 가깝다면 더 나은 결과를 나타내는게 현실이다.
+        - binning은 **regularizaion** 방법과 **학습 속도 증가**의 방법으로 작동한다.
+        - feature에 unique value의 개수가 적게 전달한다면, 모델은 성능에 큰 손실을 일으키지 않은채로 극명한 속도 향상을 기대할 수 있다.
+        
+        
+        - LightGBM optimizes the dataset storage depending on the binary power of the parameter ```max_bin```. () 
 
-num class ?
+- **```categorical_feature``` :** (Defaults to "")
+    - Description : 데이터셋에 존재하는 feature(column variable)중 categorical features(범주형 변수들)를 지정해준다.
+    - details
+        - **Note:** 
+            - only supports categorical with int type (not applicable for data represented as pandas DataFrame in Python-package)
+            - using large values could be memory consuming. Tree decision rule works best when categorical features are presented by consecutive integers starting from zero.(**0부터 순차적으로 구분되어있는 정수형타입이 best form**)
+            - 음수는 전부 missing value로 취급한다.
+        - 이것을 사용한다는 것은, 범주형과 비범주형으로 데이터를 나누어 서로 다른 tree로 분리를한다는 것을 내포한다.
+        - Xgboosting에는 없는 기능; 범주형 변수의 경우에 최소한의 OH-encoding 변수로 만들고 정수화 해야한다.
+    - examples
+        ```python
+        categorical_feature = 0,1,2
+        categorical_feature = name: C0, C1, C2 #means c1, c2 and c3 are categorical features
+
+        ```
+     
+
+- **```ignore_column``` :**  (Defaults to "")
+    - Description : 모델 학습에 쓰이지 않을 feature들을 지정해준다.
+    - Details : 
+        - 바로 위의 ```categorical_feature```와 같은 방식으로 지정해줄 수 있다.
+        - **Note:** 
+            - 모델 학습에 쓰이는 데이터가 파일에서 바로 불러와지는 경우에 사용할 수 있다.
+            - despite the fact that specified columns will be completely ignored during the training, they still should have a valid format allowing LightGBM to load file successfully
+        - xgboosting에는 없는 기능
+    - examples
+        ```python
+        ignore_column = 0,1,2
+        ignore_column = name: C0, C1, C2 #means we will ignore c1, c2 and c3 features
+
+        ```
+    
+
+- **```save_binary``` :** (Defaults to False)
+    - Description : 모델 학습시에 데이터(지정해준다면 validation data set도 포함)를 이진파일으로 저장하여 다음에 데이터를 읽을때 속도를 향상시켜준다.
+
 
 
 
