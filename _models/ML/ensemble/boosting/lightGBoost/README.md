@@ -15,6 +15,8 @@
         - [초보를 위한 정보이론 안내서 - Cross Entropy 파헤쳐보기, hyunw.kim](https://hyunw.kim/blog/2017/10/26/Cross_Entropy.html)
     - Objective function
         - [머신러닝 Loss Function 이해하기, keepdev](https://keepdev.tistory.com/48)
+    - idea of LightGBM
+        - [Gradient boosting algoritm's problem & solutions, LightGBM](https://www.notion.so/lightGBM-51c0f2848ae64390abf9a1ad1ca54fea)
     
 - LightGBM의 특징
     - Tree기반의 모델이 수직적으로 확장되는 반면 **LightGBM은 수평적으로 확장되는 특성을 지니고 있다.** 
