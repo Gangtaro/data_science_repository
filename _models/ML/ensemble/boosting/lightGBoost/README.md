@@ -17,6 +17,7 @@
         - [머신러닝 Loss Function 이해하기, keepdev](https://keepdev.tistory.com/48)
     - idea of LightGBM
         - [Gradient boosting algoritm's problem & solutions, LightGBM](https://www.notion.so/lightGBM-51c0f2848ae64390abf9a1ad1ca54fea)
+            - [from this page](https://aldente0630.github.io/data-science/2018/06/29/highly-efficient-gbdt.html)
     
 - LightGBM의 특징
     - Tree기반의 모델이 수직적으로 확장되는 반면 **LightGBM은 수평적으로 확장되는 특성을 지니고 있다.** 
