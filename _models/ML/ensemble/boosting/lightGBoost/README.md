@@ -5,6 +5,7 @@
     - [공식문서](https://lightgbm.readthedocs.io/en/latest/index.html)
     - [참고논문, LightGBM: A Highly Efficient Gradient Boosting Decision Tree (NIPS 2017)](https://papers.nips.cc/paper/2017/hash/6449f44a102fde848669bdd9eb6b76fa-Abstract.html)
         - LightGBM의 발생 배경과 구현 방식을 공부하기 좋음. -> [**해석본**](https://aldente0630.github.io/data-science/2018/06/29/highly-efficient-gbdt.html)
+        - [논문 리뷰 1, lightGBM의 핵심 이해 - Go Lab](http://machinelearningkorea.com/2019/09/25/lightgbm의-핵심이해/)
     - [Gradient Boosting with Scikit-learn, ...](https://machinelearningmastery.com/gradient-boosting-with-scikit-learn-xgboost-lightgbm-and-catboost/)
     - [What is LightGBM, how to implement it? how to fine tune the parameters? - Pushkar Mandot](https://medium.com/@pushkarmandot/what-is-lightgbm-how-to-implement-it-how-to-fine-tune-the-parameters-60347819b7fc)
         + [파생 notebook, LightGBM Classifier in Python](https://www.kaggle.com/prashant111/lightgbm-classifier-in-python)
@@ -187,6 +188,8 @@ LightGBM은 [**leaf-wise tree**](https://lightgbm.readthedocs.io/en/latest/Featu
             - **```rank_xendcg``` :** [XE_NDCG_MART](https://arxiv.org/abs/1911.09798) ranking objective function
             - ```rank_xendcg``` is faster than and achieves the similar performance as lambdarank
             - label should be int type, and larger number represents the higher relevance (e.g. 0:bad, 1:fair, 2:good, 3:perfect)
+            - 참고문서
+                - [Learning-to-rank with LightGBM, medium.com/@tacucumides ](https://medium.com/@tacucumides/learning-to-rank-with-lightgbm-code-example-in-python-843bd7b44574)
 
 - **```boosting``` :** (Defaults to 'gdbt')
     - Description : Boosting method. In belief, the boster method has a huge impact on traning performance.
