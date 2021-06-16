@@ -38,4 +38,39 @@
         시계열 데이터를 학습시키기 위해서는 ```has_time = True```으로 설정해준다.
     2. 예측 시간의 지연이 적은 곳  
         XGBM의 예측보다 무려 8배나 빠르다.
-    3. 
+    3. 중요한 관측치가 있을때 그 관측치에 가중치를 설정할 수 있다.  
+        가중치를 설정한 데이터는 무작위 순열을 생성할 때, 선택될 기회를 더 많이 가져가게 된다.  
+        ex. 모든 데이터에 가중치를 부여하는 경우는 다음과 같다. ```sample_weight = [x for x in range(train.shape[0])]```
+    4. 데이터 셋의 크기가 작을 때  
+        ```fold_len_multiplier``` as close as 1 (must be >1)  
+        ```approx_on_full_history```=True  
+        이러한 파라미터를 설정하게 되면, CatBoost는 각각의 데이터 관측치의 잔차를 계산할 때 각각 다른 모델을 사용하게 된다.
+    5. 데이터 셋의 크기가 클 때  
+        ```task_type = 'GPU'``` 으로 속도를 올릴 수 있다. Colab에서 지원하는 오래된 GPU도 사용할 수 있다.
+    6. 학습되고 있는 모델의 성능을 각각 다른 평가지표로 확인하고 싶을 때  
+        ex. AUC, Log-loss 평가지표로 확인하고 싶을 때, ```custom_metric = ['AUC', 'Logloss']  
+        또한, jupyter notebook에서 시각적으로 확인하고 싶다면, ```ipywidgets```를 설치해주어야하고, ```plot = True```
+    7. Staged prediction & Shrink Models  
+        ```staged_predict()```를 통해서 매 스테이지의 모델의 성능을 확인할 수 있다.  
+        ```shrink()``` 특정 시점의 stage의 모델을 추출할 수 있다.
+        [자세히 -> documentation](https://catboost.ai/)
+    8. 서로 다른 상황의 결합  
+        축제기간 또는 주말 또는 평일이든지 아니든지 우리는 주어진 모든 상황에서 최고의 예측값을 만들어야한다. cross-validation을 통해 여러가지 모델을 만들 수 있고 ```sum_models()```를 통해 모델을 섞을 수 있다.
+        
+        
+### Many More…
+- By default, CatBoost has an overfitting detector that stops training when CV error starts increasing. You can set parameter od_type = Iter to stop training your model after few iterations.
+- We can also balance an imbalanced dataset with the class_weight parameter.
+- CatBoost not only interprets important features, but it also returns important features for a given data point what are the important features.
+- The code for training CatBoost is simply straight forwarded and is similar to the sklearn module. You can go through the documentation of CatBoost [here](https://tech.yandex.com/catboost/doc/dg/concepts/about-docpage/) for a better understanding.
+
+### Goodbye to Hyper-parameter tuning?
+- CatBoost is implemented by powerful theories like ordered Boosting, Random permutations. It makes sure that we are not overfitting our model. It also implements symmetric trees which eliminate parameters like (min_child_leafs ). We can further tune with parameters like learning_rate, random_strength, L2_regulariser, but the results don’t vary much.
+
+### EndNote:
+CatBoost is freaking fast when most of the features in your dataset are categorical. A model that is robust to over-fitting and with very powerful tools, what else you are waiting for? Start working on CatBoost !!!
+
+
+# 참고문서
+[참고 1](https://hanishrohit.medium.com/whats-so-special-about-catboost-335d64d754ae)
+[참고 2](https://dailyheumsi.tistory.com/136)
