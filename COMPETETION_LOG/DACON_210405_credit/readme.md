@@ -37,4 +37,12 @@
             1. 분석에 사용가능할만한 모든 학습 모델 파악
             2. 타 모델보다 확연하게 좋은 결과를 나타내는 학습 모델 2-3개 간추리기
         4. 선택한 모델에 맞고, 분석의 취지에 알맞는 Feature를 재 생성 및 편집하여 예측의 정확도를 올린다.
+        
+        
+- 결과 : 
+    - public  최고점수 **0.66693** **(3등, 2021.07.04 기준)**, 
+    - private 최고점수 **0.6581080742**  
+    ![ranking image](https://github.com/Gangtaro/data_science_repository/blob/main/COMPETETION_LOG/DACON_210405_credit/ranking.png "2021. 07. 04 기준 public ranking")
+    
+    
     
